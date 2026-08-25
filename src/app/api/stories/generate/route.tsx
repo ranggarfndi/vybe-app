@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { ImageResponse } from "@vercel/og";
+import QRCode from "qrcode";
 
 const STORY_THEMES = {
   sunshine: {
@@ -59,11 +60,12 @@ export async function GET(request: NextRequest) {
   let songTitle: string | null = null;
   let songArtist: string | null = null;
   let artworkUrl: string | null = null;
+  let targetDropId = dropId;
 
   if (responseId) {
     const { data: response } = await supabase
       .from("responses")
-      .select("*, drops(instagram_username, question)")
+      .select("*, drops(id, instagram_username, question)")
       .eq("id", responseId)
       .single();
 
@@ -72,6 +74,7 @@ export async function GET(request: NextRequest) {
     }
 
     const drop = response.drops;
+    targetDropId = drop?.id || response.drop_id;
     instagramUsername = drop?.instagram_username || "someone";
     question = drop?.question || "What's your vibe?";
     message = response.message
@@ -93,12 +96,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Drop not found" }, { status: 404 });
     }
 
+    targetDropId = drop.id;
     instagramUsername = drop.instagram_username;
     question = drop.question;
     songTitle = drop.initial_song_title || null;
     songArtist = drop.initial_song_artist || null;
     artworkUrl = drop.initial_song_artwork || null;
     message = "Kirim lagu & pesan anonim kamu ke stiker link di bawah!";
+  }
+
+  // Generate QR Code data URL
+  const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vybe-app-lime.vercel.app";
+  const targetUrl = targetDropId ? `${appBaseUrl}/d/${targetDropId}` : `${appBaseUrl}`;
+  
+  let qrDataUrl = "";
+  try {
+    qrDataUrl = await QRCode.toDataURL(targetUrl, {
+      margin: 1,
+      width: 280,
+      color: {
+        dark: "#18181B",
+        light: "#FFFFFF",
+      },
+    });
+  } catch (err) {
+    console.error("QR Generation error:", err);
   }
 
   const hasSong = !!(songTitle || artworkUrl);
@@ -114,7 +136,7 @@ export async function GET(request: NextRequest) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "100px 70px 90px",
+          padding: "85px 65px 75px",
           fontFamily: "system-ui, sans-serif",
           position: "relative",
         }}
@@ -134,13 +156,13 @@ export async function GET(request: NextRequest) {
               backgroundColor: "#FFFFFF",
               border: "6px solid #18181B",
               borderRadius: "28px",
-              padding: "16px 36px",
+              padding: "14px 34px",
               boxShadow: "8px 8px 0px #18181B",
               display: "flex",
               alignItems: "center",
             }}
           >
-            <span style={{ fontSize: "40px", fontWeight: 900, color: "#18181B", letterSpacing: "-1px" }}>
+            <span style={{ fontSize: "38px", fontWeight: 900, color: "#18181B", letterSpacing: "-1px" }}>
               VYBE
             </span>
           </div>
@@ -152,9 +174,9 @@ export async function GET(request: NextRequest) {
               color: t.badgeText,
               border: "6px solid #18181B",
               borderRadius: "999px",
-              padding: "16px 36px",
+              padding: "14px 34px",
               boxShadow: "8px 8px 0px #18181B",
-              fontSize: "36px",
+              fontSize: "34px",
               fontWeight: 800,
               display: "flex",
               alignItems: "center",
@@ -170,13 +192,13 @@ export async function GET(request: NextRequest) {
             width: "100%",
             backgroundColor: "#FFFFFF",
             border: "8px solid #18181B",
-            borderRadius: "48px",
+            borderRadius: "44px",
             boxShadow: "14px 14px 0px #18181B",
-            padding: "60px 50px",
+            padding: "50px 44px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "36px",
+            gap: "30px",
             textAlign: "center",
           }}
         >
@@ -186,9 +208,9 @@ export async function GET(request: NextRequest) {
               backgroundColor: t.bg,
               border: "4px solid #18181B",
               borderRadius: "24px",
-              padding: "18px 36px",
+              padding: "16px 32px",
               boxShadow: "5px 5px 0px #18181B",
-              fontSize: "34px",
+              fontSize: "32px",
               fontWeight: 800,
               color: "#18181B",
               maxWidth: "850px",
@@ -204,7 +226,7 @@ export async function GET(request: NextRequest) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "24px",
+                gap: "20px",
                 width: "100%",
               }}
             >
@@ -214,9 +236,9 @@ export async function GET(request: NextRequest) {
                   src={artworkUrl}
                   alt="Album artwork"
                   style={{
-                    width: "360px",
-                    height: "360px",
-                    borderRadius: "36px",
+                    width: "330px",
+                    height: "330px",
+                    borderRadius: "32px",
                     border: "6px solid #18181B",
                     boxShadow: "10px 10px 0px #18181B",
                     objectFit: "cover",
@@ -231,13 +253,13 @@ export async function GET(request: NextRequest) {
                   alignItems: "center",
                   justifyContent: "center",
                   textAlign: "center",
-                  gap: "8px",
+                  gap: "6px",
                   width: "100%",
                 }}
               >
                 <span
                   style={{
-                    fontSize: "52px",
+                    fontSize: "48px",
                     fontWeight: 900,
                     color: "#18181B",
                     letterSpacing: "-1.5px",
@@ -250,7 +272,7 @@ export async function GET(request: NextRequest) {
                 </span>
                 <span
                   style={{
-                    fontSize: "36px",
+                    fontSize: "32px",
                     fontWeight: 700,
                     color: "#71717A",
                     textAlign: "center",
@@ -269,15 +291,17 @@ export async function GET(request: NextRequest) {
               style={{
                 backgroundColor: "#FFFDF5",
                 border: "5px solid #18181B",
-                borderRadius: "32px",
-                padding: "36px 44px",
+                borderRadius: "30px",
+                padding: "30px 40px",
                 boxShadow: "8px 8px 0px #18181B",
-                fontSize: hasSong ? "38px" : "48px",
+                fontSize: hasSong ? "36px" : "46px",
                 fontWeight: 700,
                 color: "#18181B",
                 lineHeight: 1.35,
                 maxWidth: "850px",
                 display: "flex",
+                textAlign: "center",
+                justifyContent: "center",
               }}
             >
               &ldquo;{message}&rdquo;
@@ -285,32 +309,67 @@ export async function GET(request: NextRequest) {
           )}
         </div>
 
-        {/* Bottom Footer Call to Action */}
+        {/* Bottom Footer Call to Action with Scannable QR Code */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            gap: "16px",
+            justifyContent: "center",
+            gap: "24px",
+            width: "100%",
           }}
         >
+          {/* Scannable QR Code Box */}
+          {qrDataUrl && (
+            <div
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "6px solid #18181B",
+                borderRadius: "28px",
+                padding: "12px",
+                boxShadow: "8px 8px 0px #18181B",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrDataUrl}
+                alt="QR Code"
+                style={{
+                  width: "140px",
+                  height: "140px",
+                  borderRadius: "12px",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Scan Instructions Pill */}
           <div
             style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
               backgroundColor: "#FFFFFF",
               border: "6px solid #18181B",
-              borderRadius: "999px",
-              padding: "18px 48px",
+              borderRadius: "32px",
+              padding: "18px 36px",
               boxShadow: "8px 8px 0px #18181B",
-              fontSize: "34px",
-              fontWeight: 800,
-              color: "#18181B",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
             }}
           >
-            <span>Buka link di stiker:</span>
-            <span style={{ color: "#FF6584" }}>vybe-app-lime.vercel.app</span>
+            <span style={{ fontSize: "30px", fontWeight: 900, color: "#18181B" }}>
+              Scan QR untuk kirim lagu & pesan
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "24px", fontWeight: 700, color: "#71717A" }}>
+                atau buka link:
+              </span>
+              <span style={{ fontSize: "25px", fontWeight: 900, color: "#FF6584" }}>
+                vybe-app-lime.vercel.app
+              </span>
+            </div>
           </div>
         </div>
       </div>
