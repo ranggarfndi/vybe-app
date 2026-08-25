@@ -1,26 +1,830 @@
 @import "tailwindcss";
 
+/* ============================================================
+   VYBE — Modern 2D Vector & Neo-Pop Design System
+   Clean 2px Outlines, Generous Whitespace, Bulletproof Spacing
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-white: #FFFFFF;
+  --bg-cream: #FFFDF9;
+  --border-ink: #18181B;
+  --text-dark: #18181B;
+  --text-muted: #64748B;
+
+  /* Playful Pop Palette */
+  --pop-yellow: #FFE600;
+  --pop-pink: #FF6584;
+  --pop-cyan: #38BDF8;
+  --pop-green: #4ADE80;
+  --pop-purple: #C084FC;
+  --pop-orange: #FB923C;
+
+  --border-stroke: 2px solid #18181B;
+  --shadow-vector: 4px 4px 0px #18181B;
+  --shadow-vector-sm: 2.5px 2.5px 0px #18181B;
+  --shadow-vector-lg: 6px 6px 0px #18181B;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html, body {
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100dvh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Headings font */
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-fredoka), cursive, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* ── Explicit Layout & Section Spacing ────────────────────── */
+
+.v-navbar {
+  border-bottom: 2px solid var(--border-ink);
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  padding: 0.85rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-navbar {
+    padding: 1.15rem 2rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.v-hero-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-hero-section {
+    padding-top: 6rem;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .v-hero-section {
+    padding-top: 7rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.v-how-section {
+  margin-top: 5rem;
+  margin-bottom: 6rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-how-section {
+    margin-top: 8rem;
+    margin-bottom: 9rem;
+  }
+}
+
+.v-how-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .v-how-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.25rem;
+  }
+}
+
+.v-footer {
+  border-top: 2px solid var(--border-ink);
+  padding: 3.5rem 1.25rem 4.5rem;
+  margin-top: 6rem;
+  background-color: var(--bg-cream);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-footer {
+    padding: 4rem 2rem 5rem;
+    margin-top: 8rem;
+  }
+}
+
+.v-footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.75rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.v-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem 1rem;
+}
+
+.v-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-ink);
+  background-color: #FFFFFF;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-decoration: none;
+  box-shadow: 1.5px 1.5px 0px var(--border-ink);
+  transition: all 0.1s ease;
+}
+
+.v-footer-link:hover {
+  background-color: var(--pop-yellow);
+  transform: translate(-1px, -1px);
+  box-shadow: 2.5px 2.5px 0px var(--border-ink);
+}
+
+/* ── Container Layouts ────────────────────────────────────── */
+
+.v-container-wide {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-container-wide {
+    padding: 0 2rem;
+  }
+}
+
+.v-container-medium {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-container-medium {
+    padding: 0 1.5rem;
+  }
+}
+
+.v-container-mobile {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Desktop 2-Column Grid */
+.v-grid-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .v-grid-hero {
+    grid-template-columns: 1fr 1.15fr;
+    gap: 4.5rem;
+  }
+}
+
+.v-grid-hero > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Card Stacks with Explicit Gap */
+.v-stack-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-stack-cards {
+    gap: 3.5rem;
+  }
+}
+
+.v-stack-responses {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-stack-responses {
+    gap: 2.75rem;
+  }
+}
+
+/* ── Vector Cards (Spacious & Clean) ──────────────────────── */
+
+.v-card {
+  background-color: #FFFFFF;
+  border: var(--border-stroke);
+  border-radius: 28px;
+  padding: 1.75rem 1.25rem;
+  box-shadow: var(--shadow-vector);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-card {
+    padding: 2.75rem 2.5rem;
+  }
+}
+
+.v-card-cream {
+  background-color: var(--bg-cream);
+  border: var(--border-stroke);
+  border-radius: 28px;
+  padding: 1.75rem 1.25rem;
+  box-shadow: var(--shadow-vector);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-card-cream {
+    padding: 2.75rem 2.25rem;
+  }
+}
+
+.v-card-yellow {
+  background-color: var(--pop-yellow);
+  border: var(--border-stroke);
+  border-radius: 28px;
+  padding: 1.5rem 1.25rem;
+  box-shadow: var(--shadow-vector);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-card-yellow {
+    padding: 1.75rem 2rem;
+  }
+}
+
+.v-card-pink {
+  background-color: var(--pop-pink);
+  color: #FFFFFF;
+  border: var(--border-stroke);
+  border-radius: 28px;
+  padding: 1.5rem 1.25rem;
+  box-shadow: var(--shadow-vector);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.v-card-green {
+  background-color: var(--pop-green);
+  border: var(--border-stroke);
+  border-radius: 28px;
+  padding: 2rem 1.25rem;
+  box-shadow: var(--shadow-vector);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.v-card-sm {
+  background-color: #FFFFFF;
+  border: var(--border-stroke);
+  border-radius: 20px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: var(--shadow-vector-sm);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Vector Form & Spacing Rules ──────────────────────────── */
+
+.v-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-form {
+    gap: 2.25rem;
+  }
+}
+
+.v-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.v-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+@media (min-width: 640px) {
+  .v-label {
+    font-size: 1.125rem;
+    gap: 0.75rem;
+  }
+}
+
+.v-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border-ink);
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 1.5px 1.5px 0px var(--border-ink);
+}
+
+/* ── Vector Input Group (Clean & Spacious) ────────────────── */
+
+.v-input-group {
+  display: flex;
+  align-items: stretch;
+  border: var(--border-stroke);
+  border-radius: 18px;
+  box-shadow: var(--shadow-vector-sm);
+  background-color: #FFFFFF;
+  overflow: hidden;
+  transition: all 0.15s ease;
+  width: 100%;
+  max-width: 100%;
+}
+
+.v-input-group:focus-within {
+  border-color: var(--border-ink);
+  box-shadow: 4px 4px 0px var(--pop-yellow);
+  background-color: var(--bg-cream);
+}
+
+.v-input-addon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  background-color: var(--pop-yellow);
+  border-right: var(--border-stroke);
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #000000;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .v-input-addon {
+    padding: 0 1.25rem;
+    font-size: 1.25rem;
+  }
+}
+
+.v-input-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+@media (min-width: 640px) {
+  .v-input-field {
+    padding: 1rem 1.25rem;
+    font-size: 1.05rem;
+  }
+}
+
+.v-textarea {
+  width: 100%;
+  padding: 1rem 1.1rem 2.25rem;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  background-color: #FFFFFF;
+  border: var(--border-stroke);
+  border-radius: 18px;
+  box-shadow: var(--shadow-vector-sm);
+  outline: none;
+  transition: all 0.15s ease;
+  resize: none;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-textarea {
+    padding: 1.1rem 1.25rem 2.25rem;
+    font-size: 1rem;
+    border-radius: 20px;
+  }
+}
+
+.v-textarea:focus {
+  box-shadow: 4px 4px 0px var(--pop-yellow);
+  background-color: var(--bg-cream);
+}
+
+/* ── Prompt Buttons Grid ──────────────────────────────────── */
+
+.v-prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-prompt-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.v-prompt-btn {
+  padding: 0.85rem 0.85rem;
+  border-radius: 16px;
+  border: 2px solid var(--border-ink);
+  background-color: #FFFFFF;
+  color: var(--text-dark);
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  box-shadow: 1.5px 1.5px 0px var(--border-ink);
+  transition: all 0.1s ease;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .v-prompt-btn {
+    padding: 0.95rem 1rem;
+    border-radius: 18px;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+}
+
+.v-prompt-btn:hover {
+  background-color: #FAFAFA;
+  transform: translate(-1px, -1px);
+  box-shadow: 2.5px 2.5px 0px var(--border-ink);
+}
+
+.v-prompt-btn-active {
+  background-color: var(--pop-yellow) !important;
+  box-shadow: 3px 3px 0px var(--border-ink) !important;
+  transform: translate(-1px, -1px);
+}
+
+/* ── Track Search & Truncation (Crisp & Never Clipped) ─────── */
+
+.v-search-box {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.v-search-dropdown {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background-color: #FFFFFF;
+  border: var(--border-stroke);
+  border-radius: 20px;
+  padding: 0.65rem;
+  box-shadow: var(--shadow-vector);
+  margin-top: 0.65rem;
+}
+
+.v-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  padding: 0.55rem 0.65rem;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .v-track-item {
+    padding: 0.65rem 0.85rem;
+    border-radius: 18px;
+    min-height: 60px;
+    gap: 0.75rem;
+  }
+}
+
+.v-track-item:hover {
+  border-color: var(--border-ink);
+  background-color: var(--bg-cream);
+}
+
+.v-track-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.v-track-art {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 2px solid var(--border-ink);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .v-track-art {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+}
+
+.v-track-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.v-track-title {
+  font-family: var(--font-fredoka), sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  padding-bottom: 1px;
+}
+
+@media (min-width: 640px) {
+  .v-track-title {
+    font-size: 0.95rem;
+  }
+}
+
+.v-track-artist {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .v-track-artist {
+    font-size: 0.8rem;
+  }
+}
+
+.v-track-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+/* ── 2D Vector Buttons ────────────────────────────────────── */
+
+.v-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  border: var(--border-stroke);
+  border-radius: 18px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow-vector-sm);
+  transition: all 0.1s ease;
+  user-select: none;
+  color: var(--text-dark);
+  background-color: #FFFFFF;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .v-btn {
+    padding: 0.95rem 1.6rem;
+    font-size: 1.05rem;
+    border-radius: 20px;
+    gap: 0.65rem;
+  }
+}
+
+.v-btn:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 4px 4px 0px var(--border-ink);
+}
+
+.v-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--border-ink);
+}
+
+.v-btn-yellow {
+  background-color: var(--pop-yellow);
+}
+
+.v-btn-pink {
+  background-color: var(--pop-pink);
+  color: #FFFFFF;
+}
+
+.v-btn-cyan {
+  background-color: var(--pop-cyan);
+}
+
+.v-btn-green {
+  background-color: var(--pop-green);
+}
+
+.v-btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 12px;
+}
+
+@media (min-width: 640px) {
+  .v-btn-sm {
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    border-radius: 14px;
+  }
+}
+
+.v-btn-lg {
+  padding: 1.1rem 1.6rem;
+  font-size: 1.1rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-vector);
+}
+
+@media (min-width: 640px) {
+  .v-btn-lg {
+    padding: 1.2rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 22px;
+  }
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
+
+.v-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.95rem;
+  font-family: var(--font-fredoka), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid var(--border-ink);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0px var(--border-ink);
+  background-color: var(--pop-yellow);
+  color: #000000;
+}
+
+@media (min-width: 640px) {
+  .v-badge {
+    padding: 0.5rem 1.15rem;
+    font-size: 0.9rem;
+    gap: 0.45rem;
+  }
+}
+
+.v-sticker {
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border: 2px solid var(--border-ink);
+  border-radius: 12px;
+  font-family: var(--font-fredoka), sans-serif;
+  font-weight: 700;
+  box-shadow: 2.5px 2.5px 0px var(--border-ink);
+  background-color: #FFFFFF;
+}
+
+@media (min-width: 640px) {
+  .v-sticker {
+    padding: 0.5rem 1.1rem;
+    border-radius: 14px;
+  }
+}
+
+.animate-pop {
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
