@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
   let songTitle: string | null = null;
   let songArtist: string | null = null;
   let artworkUrl: string | null = null;
-  let targetDropId = dropId;
+  let targetDropId: string | null = dropId;
 
   if (responseId) {
     const { data: response } = await supabase
@@ -73,8 +73,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Response not found" }, { status: 404 });
     }
 
-    const drop = response.drops;
-    targetDropId = drop?.id || response.drop_id;
+    const drop = Array.isArray(response.drops) ? response.drops[0] : response.drops;
+    targetDropId = response.drop_id || drop?.id || null;
     instagramUsername = drop?.instagram_username || "someone";
     question = drop?.question || "What's your vibe?";
     message = response.message
@@ -102,18 +102,22 @@ export async function GET(request: NextRequest) {
     songTitle = drop.initial_song_title || null;
     songArtist = drop.initial_song_artist || null;
     artworkUrl = drop.initial_song_artwork || null;
-    message = "Kirim lagu & pesan anonim kamu ke stiker link di bawah!";
+    message = "Kirim lagu & pesan anonim kamu ke link di bawah!";
   }
 
-  // Generate QR Code data URL
-  const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vybe-app-lime.vercel.app";
-  const targetUrl = targetDropId ? `${appBaseUrl}/d/${targetDropId}` : `${appBaseUrl}`;
+  // Generate QR Code data URL that points directly to the specific drop page
+  let appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vybe-app-lime.vercel.app";
+  if (appBaseUrl.includes("localhost")) {
+    appBaseUrl = "https://vybe-app-lime.vercel.app";
+  }
+  const targetUrl = targetDropId ? `${appBaseUrl}/d/${targetDropId}` : appBaseUrl;
   
   let qrDataUrl = "";
   try {
     qrDataUrl = await QRCode.toDataURL(targetUrl, {
       margin: 1,
-      width: 280,
+      width: 320,
+      errorCorrectionLevel: "M",
       color: {
         dark: "#18181B",
         light: "#FFFFFF",
