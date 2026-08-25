@@ -295,8 +295,8 @@ export async function GET(request: NextRequest) {
               gap: "12px",
             }}
           >
-            <span>Buka link di stiker untuk kirim ke</span>
-            <span style={{ color: "#FF6584" }}>@{instagramUsername}</span>
+            <span>Buka link di stiker:</span>
+            <span style={{ color: "#FF6584" }}>vybe-app-lime.vercel.app</span>
           </div>
         </div>
       </div>

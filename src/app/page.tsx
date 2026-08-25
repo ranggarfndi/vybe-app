@@ -211,7 +211,7 @@ export default function HomePage() {
                     )}
 
                     <div className="text-[11px] font-bold text-zinc-400 pt-1">
-                      vybe.app/@{instagramUsername.trim() || "kamu"}
+                      vybe-app-lime.vercel.app
                     </div>
                   </div>
                 </div>
