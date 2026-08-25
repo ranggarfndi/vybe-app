@@ -38,42 +38,69 @@ type ThemeKey = keyof typeof STORY_THEMES;
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const responseId = searchParams.get("responseId");
+  const dropId = searchParams.get("dropId");
   const themeParam = (searchParams.get("theme") ?? "sunshine") as ThemeKey;
 
-  if (!responseId) {
-    return NextResponse.json({ error: "Missing responseId" }, { status: 400 });
+  if (!responseId && !dropId) {
+    return NextResponse.json({ error: "Missing responseId or dropId" }, { status: 400 });
   }
 
   const theme = STORY_THEMES[themeParam] ? themeParam : "sunshine";
   const t = STORY_THEMES[theme];
 
-  // Fetch response and drop data from Supabase
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  const { data: response } = await supabase
-    .from("responses")
-    .select("*, drops(instagram_username, question)")
-    .eq("id", responseId)
-    .single();
+  let instagramUsername = "someone";
+  let question = "Kirim lagu atau pesan anonim!";
+  let message: string | null = null;
+  let songTitle: string | null = null;
+  let songArtist: string | null = null;
+  let artworkUrl: string | null = null;
 
-  if (!response) {
-    return NextResponse.json({ error: "Response not found" }, { status: 404 });
+  if (responseId) {
+    const { data: response } = await supabase
+      .from("responses")
+      .select("*, drops(instagram_username, question)")
+      .eq("id", responseId)
+      .single();
+
+    if (!response) {
+      return NextResponse.json({ error: "Response not found" }, { status: 404 });
+    }
+
+    const drop = response.drops;
+    instagramUsername = drop?.instagram_username || "someone";
+    question = drop?.question || "What's your vibe?";
+    message = response.message
+      ? response.message.length > 180
+        ? response.message.slice(0, 177) + "..."
+        : response.message
+      : null;
+    songTitle = response.song_title || null;
+    songArtist = response.song_artist || null;
+    artworkUrl = response.song_artwork_url || null;
+  } else if (dropId) {
+    const { data: drop } = await supabase
+      .from("drops")
+      .select("*")
+      .eq("id", dropId)
+      .single();
+
+    if (!drop) {
+      return NextResponse.json({ error: "Drop not found" }, { status: 404 });
+    }
+
+    instagramUsername = drop.instagram_username;
+    question = drop.question;
+    songTitle = drop.initial_song_title || null;
+    songArtist = drop.initial_song_artist || null;
+    artworkUrl = drop.initial_song_artwork || null;
+    message = "Kirim lagu & pesan anonim kamu ke stiker link di bawah!";
   }
 
-  const drop = response.drops;
-  const instagramUsername = drop?.instagram_username || "someone";
-  const question = drop?.question || "What's your vibe?";
-  const message = response.message
-    ? response.message.length > 180
-      ? response.message.slice(0, 177) + "..."
-      : response.message
-    : null;
-  const songTitle = response.song_title || null;
-  const songArtist = response.song_artist || null;
-  const artworkUrl = response.song_artwork_url || null;
   const hasSong = !!(songTitle || artworkUrl);
 
   return new ImageResponse(
@@ -231,7 +258,7 @@ export async function GET(request: NextRequest) {
                 borderRadius: "32px",
                 padding: "36px 44px",
                 boxShadow: "8px 8px 0px #18181B",
-                fontSize: hasSong ? "38px" : "50px",
+                fontSize: hasSong ? "38px" : "48px",
                 fontWeight: 700,
                 color: "#18181B",
                 lineHeight: 1.35,
@@ -268,8 +295,8 @@ export async function GET(request: NextRequest) {
               gap: "12px",
             }}
           >
-            <span>Dikirim anonim lewat</span>
-            <span style={{ color: "#FF6584" }}>vybe.app</span>
+            <span>Buka link di stiker untuk kirim ke</span>
+            <span style={{ color: "#FF6584" }}>@{instagramUsername}</span>
           </div>
         </div>
       </div>

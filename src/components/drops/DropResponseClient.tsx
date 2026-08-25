@@ -7,9 +7,11 @@ import type { Drop, SpotifyTrack } from "@/types";
 import SpotifySearchPicker from "@/components/music/SpotifySearchPicker";
 import Footer from "@/components/common/Footer";
 
+import StoryModal from "@/components/story/StoryModal";
+
 interface DropResponseClientProps {
   drop: Drop;
-  isJustCreated: boolean;
+  isJustCreated?: boolean;
 }
 
 export default function DropResponseClient({
@@ -24,6 +26,7 @@ export default function DropResponseClient({
   const [errorMsg, setErrorMsg] = useState("");
   const [copied, setCopied] = useState(false);
   const [isOwner, setIsOwner] = useState(isJustCreated);
+  const [showStoryModal, setShowStoryModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -166,10 +169,10 @@ export default function DropResponseClient({
                     {copied ? "Link Tersalin!" : "Salin Link"}
                   </button>
                   <button
-                    onClick={handleShareNative}
-                    className="v-btn v-btn-pink v-btn-sm flex-1 text-sm font-bold"
+                    onClick={() => setShowStoryModal(true)}
+                    className="v-btn v-btn-pink v-btn-sm flex-1 text-sm font-bold shadow-[2px_2px_0px_#000]"
                   >
-                    Share ke IG Story
+                    Bikin Story Card &amp; Share
                   </button>
                   <Link
                     href={`/d/${drop.id}/inbox`}
@@ -179,6 +182,14 @@ export default function DropResponseClient({
                   </Link>
                 </div>
               </div>
+            )}
+
+            {/* Story Modal for Drop Creator */}
+            {showStoryModal && (
+              <StoryModal
+                drop={drop}
+                onClose={() => setShowStoryModal(false)}
+              />
             )}
 
             {/* Drop Question Card */}
