@@ -26,7 +26,7 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [shareNotice, setShareNotice] = useState("");
+  const [showIgGuide, setShowIgGuide] = useState(false);
 
   const imageUrl = `/api/stories/generate?responseId=${response.id}&theme=${selectedTheme}`;
   const dropPublicUrl = typeof window !== "undefined" ? `${window.location.origin}/d/${drop.id}` : "";
@@ -45,12 +45,10 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      // Copy drop link to clipboard for easy IG Story link sticker
       if (dropPublicUrl) {
         await navigator.clipboard.writeText(dropPublicUrl);
-        setShareNotice("Gambar tersimpan & Link Drop tersalin untuk stiker IG!");
-        setTimeout(() => setShareNotice(""), 4000);
       }
+      setShowIgGuide(true);
     } catch {
       window.open(imageUrl, "_blank");
     } finally {
@@ -60,9 +58,8 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
 
   async function handleShare() {
     setIsSharing(true);
-    setShareNotice("");
     try {
-      // Always copy drop link to clipboard so user can easily paste in IG Story Link Sticker
+      // 1. Always copy drop link to clipboard
       if (dropPublicUrl) {
         try {
           await navigator.clipboard.writeText(dropPublicUrl);
@@ -71,26 +68,31 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
         }
       }
 
-      if (typeof navigator !== "undefined" && navigator.share) {
-        const res = await fetch(imageUrl);
-        const blob = await res.blob();
-        const file = new File([blob], `vybe-${drop.instagram_username}.png`, { type: "image/png" });
+      // 2. Fetch image blob
+      const res = await fetch(imageUrl);
+      const blob = await res.blob();
+      const file = new File([blob], `vybe-${drop.instagram_username}.png`, { type: "image/png" });
 
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      // 3. Try native Web Share API with image file
+      if (typeof navigator !== "undefined" && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
           await navigator.share({
             title: `VYBE @${drop.instagram_username}`,
+            text: `Kirim pesan anonim & lagu ke @${drop.instagram_username}: ${dropPublicUrl}`,
             files: [file],
           });
-          setShareNotice("Link Drop tersalin! Tempel di Link Sticker IG.");
-          setTimeout(() => setShareNotice(""), 4000);
-        } else {
-          await handleDownload();
+          setShowIgGuide(true);
+        } catch (err: any) {
+          if (err.name !== "AbortError") {
+            await handleDownload();
+          }
         }
       } else {
+        // Fallback: auto download + show guide
         await handleDownload();
       }
     } catch {
-      // User cancelled
+      await handleDownload();
     } finally {
       setIsSharing(false);
     }
@@ -100,8 +102,16 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
     if (dropPublicUrl) {
       void navigator.clipboard.writeText(dropPublicUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2500);
     }
+  }
+
+  function handleOpenInstagram() {
+    // Deep-link to open Instagram story camera on mobile
+    window.location.href = "instagram://story-camera";
+    setTimeout(() => {
+      window.location.href = "https://instagram.com";
+    }, 1500);
   }
 
   return (
@@ -192,19 +202,12 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
               </div>
             </div>
 
-            {/* Notification Badge if link copied */}
-            {shareNotice && (
-              <div className="p-3 bg-[#4ADE80]/20 border-2 border-[#4ADE80] rounded-xl text-xs font-bold text-zinc-900 text-center animate-pop">
-                {shareNotice}
-              </div>
-            )}
-
             {/* Action Buttons */}
             <div className="flex flex-col gap-2.5 pt-1">
               <button
                 onClick={handleShare}
                 disabled={isSharing}
-                className="v-btn v-btn-pink w-full py-3 text-sm sm:text-base font-display font-black shadow-[3.5px_3.5px_0px_#000]"
+                className="v-btn v-btn-pink w-full py-3.5 text-sm sm:text-base font-display font-black shadow-[3.5px_3.5px_0px_#000]"
               >
                 {isSharing ? "Menyiapkan..." : "Share ke Instagram Story"}
               </button>
@@ -226,10 +229,31 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
               </div>
             </div>
 
-            <div className="p-3 bg-[#FFFDF5] rounded-xl border border-zinc-200 text-[11px] text-zinc-600 font-medium leading-relaxed">
-              <strong className="text-zinc-900 font-bold block mb-0.5">Tips Instagram Story:</strong>
-              Upload gambar hasil download ke Story kamu, lalu tempel link drop menggunakan <strong>Stiker Tautan (Link Sticker)</strong> agar teman-temanmu bisa langsung mengirim pesan!
-            </div>
+            {/* Step-by-Step IG Story Guide Banner */}
+            {showIgGuide ? (
+              <div className="p-4 bg-[#FFE600] rounded-2xl border-2 border-zinc-900 text-zinc-900 shadow-[3px_3px_0px_#000] animate-pop space-y-2.5">
+                <p className="font-display font-black text-sm text-black">
+                  Langkah Share ke Instagram Story:
+                </p>
+                <ol className="text-xs font-semibold space-y-1.5 list-decimal list-inside text-zinc-800 leading-relaxed">
+                  <li>Gambar sudah tersimpan di galeri HP kamu.</li>
+                  <li>Link Drop kamu sudah <strong>otomatis tersalin</strong> di Clipboard.</li>
+                  <li>Buka Instagram Story, pilih gambar tadi, lalu tempel link via <strong>Stiker Tautan (Link Sticker)</strong>!</li>
+                </ol>
+                <button
+                  onClick={handleOpenInstagram}
+                  className="v-btn bg-white w-full py-2.5 text-xs font-display font-black border-2 border-black mt-2 shadow-[2px_2px_0px_#000]"
+                >
+                  Buka Aplikasi Instagram
+                </button>
+              </div>
+            ) : (
+              <div className="p-3 bg-[#FFFDF5] rounded-xl border border-zinc-200 text-[11px] text-zinc-600 font-medium leading-relaxed">
+                <strong className="text-zinc-900 font-bold block mb-0.5">Cara Pasang Link di IG Story:</strong>
+                Klik tombol <strong>Share</strong>, sistem akan otomatis menyimpan gambar dan menyalin link drop kamu. Di Instagram Story, pasang link via <strong>Stiker Tautan (Link Sticker)</strong> agar temanmu bisa klik langsung!
+              </div>
+            )}
+
           </div>
 
         </div>
