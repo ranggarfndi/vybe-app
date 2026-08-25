@@ -134,7 +134,6 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
   }
 
   function handleOpenInstagram() {
-    // Direct deep-link to launch Instagram Story camera on mobile
     window.location.href = "instagram://story-camera";
     setTimeout(() => {
       window.location.href = "https://instagram.com";
@@ -157,22 +156,22 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-pop overflow-y-auto"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      {/* Modal Dialog Container */}
-      <div className="v-card max-w-[700px] w-full p-5 sm:p-6 bg-white shadow-[8px_8px_0px_#000] max-h-[92vh] overflow-y-auto my-auto">
+      {/* Modal Dialog Container with generous width and padding */}
+      <div className="v-card max-w-[780px] w-full p-5 sm:p-7 bg-white shadow-[8px_8px_0px_#000] max-h-[92vh] overflow-y-auto my-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 mb-4 border-b-2 border-zinc-100">
+        <div className="flex items-center justify-between pb-4 mb-5 border-b-2 border-zinc-100">
           <div>
-            <h3 className="font-display font-black text-xl sm:text-2xl text-zinc-900">
+            <h3 className="font-display font-black text-xl sm:text-2xl text-zinc-900 leading-snug">
               Bikin Story Card (9:16)
             </h3>
-            <p className="text-xs text-zinc-500 font-semibold mt-0.5">
+            <p className="text-xs text-zinc-500 font-semibold mt-1">
               Siap dibagikan ke Instagram Stories &amp; Stiker Musik
             </p>
           </div>
           <button
             onClick={onClose}
-            className="v-btn v-btn-sm bg-zinc-100 px-3 py-1 text-xs font-black"
+            className="v-btn v-btn-sm bg-zinc-100 px-3.5 py-1.5 text-xs font-black"
             aria-label="Tutup"
           >
             Tutup
@@ -180,11 +179,11 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
         </div>
 
         {/* 2-Column Grid on Desktop / Stack on Mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 sm:gap-8 items-start">
           
           {/* Left Column: Direct High-Res Image Preview */}
-          <div className="sm:col-span-6 flex flex-col items-center justify-center">
-            <div className="w-[230px] sm:w-[250px] aspect-[9/16] rounded-[24px] border-[3px] border-zinc-900 shadow-[6px_6px_0px_#000] overflow-hidden bg-zinc-100 relative flex items-center justify-center">
+          <div className="sm:col-span-5 flex flex-col items-center justify-center">
+            <div className="w-[210px] sm:w-[240px] aspect-[9/16] rounded-[24px] border-[3px] border-zinc-900 shadow-[6px_6px_0px_#000] overflow-hidden bg-zinc-100 relative flex items-center justify-center">
               
               {isImageLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/90 z-10">
@@ -206,14 +205,14 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
           </div>
 
           {/* Right Column: Controls, Song Detection, Actions */}
-          <div className="sm:col-span-6 flex flex-col gap-3.5">
+          <div className="sm:col-span-7 flex flex-col gap-4">
             
             {/* Theme Picker */}
-            <div>
-              <label className="block text-xs font-display font-bold text-zinc-600 mb-1.5 uppercase tracking-wider">
+            <div className="space-y-2">
+              <label className="block text-xs font-display font-black text-zinc-700 uppercase tracking-wider">
                 Pilih Warna Tema:
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 {THEMES.map((t) => {
                   const isSelected = selectedTheme === t.id;
                   return (
@@ -226,13 +225,13 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
                         }
                       }}
                       style={{ backgroundColor: t.bg }}
-                      className={`py-2 px-2 rounded-xl text-xs font-display font-bold border-2 border-zinc-900 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      className={`py-3 px-3 rounded-xl text-xs font-display font-black border-2 border-zinc-900 transition-all cursor-pointer flex items-center justify-center ${
                         isSelected
-                          ? "shadow-[3px_3px_0px_#000] -translate-y-0.5 ring-2 ring-black font-black"
-                          : "opacity-80 hover:opacity-100 shadow-[1px_1px_0px_#000]"
+                          ? "shadow-[3px_3px_0px_#000] -translate-y-0.5 ring-2 ring-black text-zinc-950"
+                          : "opacity-85 hover:opacity-100 shadow-[1.5px_1.5px_0px_#000] text-zinc-900"
                       }`}
                     >
-                      <span className="text-zinc-900">{t.label}</span>
+                      <span>{t.label}</span>
                     </button>
                   );
                 })}
@@ -241,29 +240,33 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
 
             {/* Song Detection Info Box */}
             {hasSong && (
-              <div className="p-3 bg-[#FFFDF5] rounded-xl border-2 border-zinc-900 shadow-[2px_2px_0px_#000]">
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">
-                    Lagu Terdeteksi:
+              <div className="p-4 bg-[#FFFDF5] rounded-2xl border-2 border-zinc-900 shadow-[3px_3px_0px_#000] space-y-2">
+                <div className="flex items-center justify-between gap-2 pb-1 border-b border-zinc-200">
+                  <span className="text-[11px] font-black text-zinc-500 uppercase tracking-wider">
+                    Lagu Terdeteksi
                   </span>
                   {songUrl && (
                     <button
                       onClick={handleOpenSpotify}
                       className="text-[11px] font-bold text-[#1DB954] hover:underline"
                     >
-                      Buka di Spotify ↗
+                      Buka Spotify ↗
                     </button>
                   )}
                 </div>
-                <p className="font-display font-black text-sm text-zinc-900 truncate">
-                  {songTitle}
-                </p>
-                <p className="text-xs text-zinc-600 font-semibold truncate mb-2">
-                  {songArtist}
-                </p>
+                
+                <div className="pt-0.5">
+                  <p className="font-display font-black text-base text-zinc-900 leading-snug truncate">
+                    {songTitle}
+                  </p>
+                  <p className="text-xs text-zinc-600 font-semibold truncate mt-0.5">
+                    {songArtist}
+                  </p>
+                </div>
+
                 <button
                   onClick={handleCopySong}
-                  className="v-btn v-btn-sm bg-white w-full text-xs font-bold py-1.5 border border-zinc-300"
+                  className="v-btn v-btn-sm bg-white w-full text-xs font-bold py-2 border-2 border-zinc-900 shadow-[1.5px_1.5px_0px_#000] mt-1"
                 >
                   {copiedSong ? "Nama Lagu Tersalin!" : "Salin Nama Lagu (Untuk Stiker Musik IG)"}
                 </button>
@@ -271,7 +274,7 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-col gap-2 pt-1">
+            <div className="flex flex-col gap-2.5 pt-1">
               <button
                 onClick={handleShare}
                 disabled={isSharing}
@@ -280,17 +283,17 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
                 {isSharing ? "Menyiapkan..." : "Share ke Instagram Story"}
               </button>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2.5">
                 <button
                   onClick={handleDownload}
                   disabled={isDownloading}
-                  className="v-btn bg-white v-btn-sm flex-1 text-xs font-bold"
+                  className="v-btn bg-white v-btn-sm flex-1 text-xs font-bold py-2.5"
                 >
                   {isDownloading ? "Mengunduh..." : "Simpan Gambar"}
                 </button>
                 <button
                   onClick={handleCopyLink}
-                  className="v-btn bg-white v-btn-sm flex-1 text-xs font-bold"
+                  className="v-btn bg-white v-btn-sm flex-1 text-xs font-bold py-2.5"
                 >
                   {copiedLink ? "Link Tersalin!" : "Salin Link Drop"}
                 </button>
@@ -303,22 +306,22 @@ export default function StoryModal({ response, drop, onClose }: StoryModalProps)
                 <p className="font-display font-black text-sm text-black">
                   Langkah di Instagram Story:
                 </p>
-                <ol className="text-xs font-semibold space-y-1 list-decimal list-inside text-zinc-900 leading-relaxed">
+                <ol className="text-xs font-semibold space-y-1.5 list-decimal list-inside text-zinc-900 leading-relaxed">
                   <li>Gambar sudah tersimpan di galeri HP kamu.</li>
                   <li>Link Drop kamu <strong>otomatis tersalin</strong> (tempel di Stiker Tautan).</li>
                   {hasSong && (
-                    <li>Cari <strong>{songTitle}</strong> di Stiker Musik IG agar ada suaranya!</li>
+                    <li>Cari <strong>{songTitle}</strong> di Stiker Musik IG agar lagunya bersuara!</li>
                   )}
                 </ol>
                 <button
                   onClick={handleOpenInstagram}
-                  className="v-btn bg-white w-full py-2.5 text-xs font-display font-black border-2 border-black mt-1.5 shadow-[2px_2px_0px_#000]"
+                  className="v-btn bg-white w-full py-2.5 text-xs font-display font-black border-2 border-black mt-2 shadow-[2px_2px_0px_#000]"
                 >
                   Buka Aplikasi Instagram
                 </button>
               </div>
             ) : (
-              <div className="p-2.5 bg-[#FFFDF5] rounded-xl border border-zinc-200 text-[11px] text-zinc-600 font-medium leading-relaxed">
+              <div className="p-3 bg-[#FFFDF5] rounded-xl border border-zinc-200 text-[11px] text-zinc-600 font-medium leading-relaxed">
                 <strong className="text-zinc-900 font-bold block mb-0.5">Cara Share ke Story:</strong>
                 Klik <strong>Share</strong> untuk otomatis mengunduh gambar &amp; menyalin link drop. Di IG Story, pasang link via <strong>Stiker Tautan</strong> &amp; lagunya di <strong>Stiker Musik</strong>.
               </div>

@@ -224,14 +224,26 @@ export async function GET(request: NextRequest) {
                 />
               )}
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  gap: "8px",
+                  width: "100%",
+                }}
+              >
                 <span
                   style={{
                     fontSize: "52px",
                     fontWeight: 900,
                     color: "#18181B",
                     letterSpacing: "-1.5px",
-                    lineHeight: 1.1,
+                    lineHeight: 1.15,
+                    textAlign: "center",
+                    maxWidth: "850px",
                   }}
                 >
                   {songTitle || "Lagu Favorit"}
@@ -241,6 +253,8 @@ export async function GET(request: NextRequest) {
                     fontSize: "36px",
                     fontWeight: 700,
                     color: "#71717A",
+                    textAlign: "center",
+                    maxWidth: "850px",
                   }}
                 >
                   {songArtist || "Unknown Artist"}
